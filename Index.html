@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Alumnos</title>
+    <title>Formulario de Clientes</title>
 
     <style>
         body {
@@ -61,7 +61,7 @@
         <div class="row">
             <div class="col-12 col-md-8">
                 <div class="card">
-                    <div class="card-header">REGISTRO DE ALUMNOS</div>
+                    <div class="card-header">REGISTRO DE CLIENTES</div>
                     <div class="card-body">
                         <form id="frmAlumno" @reset.prevent="nuevoAlumno" v-on:submit.prevent="guardarAlumno">
                             <div class="row p-1">
@@ -85,15 +85,6 @@
                             </div>
                             <div class="row p-1">
                                 <div class="col-3 col-md-2">
-                                    <label for="txtApellidoAlumno">APELLIDO:</label>
-                                </div>
-                                <div class="col-9 col-md-6">
-                                    <input required pattern="[A-Za-zÑñáéíóú ]{3,75}"
-                                        v-model="alumno.apellido" type="text" class="form-control" name="txtApellidoAlumno" id="txtApellidoAlumno">
-                                </div>
-                            </div>
-                            <div class="row p-1">
-                                <div class="col-3 col-md-2">
                                     <label for="txtDireccionAlumno">DIRECCION:</label>
                                 </div>
                                 <div class="col-9 col-md-6">
@@ -103,10 +94,10 @@
                             </div>
                             <div class="row p-1">
                                 <div class="col-3 col-md-2">
-                                    <label for="txtTelefonoAlumno">TELEFONO:</label>
+                                    <label for="txtZonaAlumno">ZONA:</label>
                                 </div>
                                 <div class="col-9 col-md-6">
-                                    <input required pattern="[0-9]{3,75}"
+                                    <input required pattern="[A-Za-zÑñáéíóú]{3,75}"
                                         v-model="alumno.telefono" type="int" class="form-control" name="txtTelefonoAlumno" id="txtTelefonoAlumno">
                                 </div>
                             </div>
@@ -125,7 +116,7 @@
             </div>
             <div class="col-12 col-md-12">
                 <div class="card">
-                    <div class="card-header">LISTADO DE ALUMNOS</div>
+                    <div class="card-header">LISTADO DE CLIENTES</div>
                     <div class="card-body">
                         <table class="table table-bordered table-hover">
                             <thead>
@@ -138,18 +129,16 @@
                                 <tr>
                                     <th >CODIGO</th>
                                     <th >NOMBRE</th>
-                                    <th >APELLIDO</th>
                                     <th >DIRECCION</th>
-                                    <th >TELEFONO</th>
+                                    <th >ZONA</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="alumno in alumnos" :key="alumno.idAlumno" @click="modificarAlumno(alumno)" >
                                     <td>{{ alumno.codigo }}</td>
                                     <td>{{ alumno.nombre }}</td>
-                                    <td>{{ alumno.apellido }}</td>
                                     <td>{{ alumno.direccion }}</td>
-                                    <td>{{ alumno.telefono }}</td>
+                                    <td>{{ alumno.zona}}</td>
                                     <td><button class="btn btn-danger" @click="eliminarAlumno(alumno)">ELIMINAR</button></td>
                                 </tr>
                             </tbody>
@@ -173,9 +162,8 @@
                         idAlumno : '',
                         codigo : '',
                         nombre : '',
-                        apellido: '',
                         direccion:'',
-                        telefono:'',
+                        zona:'',
                     }
                 }
             },
@@ -207,9 +195,8 @@
                     this.alumno.idAlumno = '';
                     this.alumno.codigo = '';
                     this.alumno.nombre = '';
-                    this.alumno.apellido= '';
                     this.alumno.direccion= '';
-                    this.alumno.telefono= '';
+                    this.alumno.zona= '';
                 },
                 modificarAlumno(alumno){
                     this.accion = 'modificar';
@@ -217,7 +204,8 @@
                 },
                 listarAlumnos(){
                     this.alumnos = JSON.parse( localStorage.getItem('alumnos') || "[]" )
-                        .filter(alumno=>alumno.nombre.toLowerCase().indexOf(this.buscar.toLowerCase())>-1);
+                    .filter(cliente=>cliente.nombre.toLowerCase().indexOf(this.buscar.toLowerCase())>-1 ||
+                                cliente.codigo.indexOf(this.buscar)>-1);
                 }
             },
             created(){

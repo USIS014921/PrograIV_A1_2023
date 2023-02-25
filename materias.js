@@ -51,7 +51,7 @@ Vue.component('component-materias',{
     },
     template: `
         <div class="row">
-            <div class="col-12 col-md-12">
+            <div class="col-12 col-md-6">
                 <div class="card">
                     <div class="card-header">REGISTRO DE MATERIA</div>
                     <div class="card-body">
@@ -88,7 +88,7 @@ Vue.component('component-materias',{
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-12">
+            <div class="col-12 col-md-6">
                 <div class="card">
                     <div class="card-header">LISTADO DE MATERIAS</div>
                     <div class="card-body">

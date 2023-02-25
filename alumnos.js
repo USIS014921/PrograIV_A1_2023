@@ -57,7 +57,7 @@ Vue.component('component-alumnos',{
     },
     template: `
         <div class="row">
-            <div class="col-12 col-md-12">
+            <div class="col-12 col-md-6">
                 <div class="card">
                     <div class="card-header">REGISTRO DE ALUMNO</div>
                     <div class="card-body">
@@ -136,6 +136,9 @@ Vue.component('component-alumnos',{
                                 <tr>
                                     <th>CODIGO</th>
                                     <th colspan="5">NOMBRE</th>
+                                    <th colspan="5">TELEFONO</th>
+                                    <th colspan="5">DIRRECION</th>
+                                    <th colspan="5">DUI</th>
                                 </tr>
                             </thead>
                             <tbody>

@@ -51,7 +51,7 @@ Vue.component('component-matriculas',{
     },
     template: `
         <div class="row">
-            <div class="col-12 col-md-12">
+            <div class="col-12 col-md-6">
                 <div class="card">
                     <div class="card-header">REGISTRO DE MATRICULA</div>
                     <div class="card-body">

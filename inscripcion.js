@@ -1,119 +1,179 @@
+Vue.component('v-select-matricula',VueSelect.VueSelect);
 Vue.component('component-inscripcion',{
-    data() {
+    data:()=>{
         return {
-            accion:'nuevo',
-            buscar: '',
-            inscripcion: [],
+            buscar:'',
+            inscripcion:[],
             inscripcion:{
+                accion : 'nuevo',
                 idInscripcion : '',
-                codigo : '',
-                nombre : '',
+                codigo: '',
+                ciclo: '',
+                año : '',
+                fecha : '',
             }
         }
     },
     methods:{
-        guardarInscripcion(){
-            this.listarInscripcion();
-            if(this.accion==='nuevo'){
-                this.inscripcion.idInscripcion = new Date().getTime().toString(16);
-                this.inscripcion.push( JSON.parse( JSON.stringify(this.inscripcion) ) );
-            }else if(this.accion==='modificar'){
-                let index = this.inscripcion.findIndex(inscripcion=>inscripcion.idInscripcion==this.inscripcion.idInscripcion);
-                this.inscripcion[index] = JSON.parse( JSON.stringify(this.inscripcion) );
-            }else if(this.accion==='eliminar'){
-                let index = this.inscripcion.findIndex(inscripcion=>inscripcion.idInscripcion==this.inscripcion.idInscripcion);
-                this.inscripcion.splice(index,1);
-            }
-            localStorage.setItem("inscripcion", JSON.stringify(this.inscripcion) );
-            this.nuevoInscripcion();
+        buscandoInscripcion(){
+            this.obtenerInscripcion(this.buscar);
         },
         eliminarInscripcion(inscripcion){
-            if( confirm(`Esta seguro de eliminar a ${inscripcion.nombre}?`) ){
-                this.accion='eliminar';
-                this.inscripcion=inscripcion;
+            if( confirm(`Esta seguro de eliminar la inscripcion ${inscripcion.nombre}?`) ){
+                this.inscripcion.accion = 'eliminar';
+                this.inscripcion.idInscripcion = inscripcion.idInscripcion;
                 this.guardarInscripcion();
             }
+            this.nuevoInscripcion();
+        },
+        modificarInscripcion(datos){
+            this.inscripcion = JSON.parse(JSON.stringify(datos));
+            this.inscripcion.accion = 'modificar';
+        },
+        guardarInscripcion(){
+            this.obtenerInscripcion();
+            let inscripcion = JSON.parse(localStorage.getItem('inscripcion')) || [];
+            if(this.inscripcion.accion=="nuevo"){
+                this.inscripcion.idInscripcion = generarIdUnicoFecha();
+                inscripcion.push(this.inscripcion);
+            } else if(this.inscripcion.accion=="modificar"){
+                let index = inscripcion.findIndex(inscripcion=>inscripcion.idInscripcion==this.inscripcion.idInscripcion);
+                inscripcion[index] = this.inscripcion;
+            } else if( this.inscripcion.accion=="eliminar" ){
+                let index = inscripcion.findIndex(inscripcion=>inscripcion.idInscripcion==this.inscripcion.idInscripcion);
+                inscripcion.splice(index,1);
+            }
+            localStorage.setItem('inscripcion', JSON.stringify(inscripcion));
+            this.nuevoInscripcion();
+            this.obtenerInscripcion();
+            this.inscripcion.msg = 'Inscripcion procesada con exito';
+        },
+        obtenerInscripcion(valor=''){
+            this.inscripcion = [];
+            let inscripcion = JSON.parse(localStorage.getItem('inscripcion')) || [];
+            this.inscripcion = inscripcion.filter(inscripcion=>inscripcion.ciclo.toLowerCase().indexOf(valor.toLowerCase())>-1);
+             
+            //aqui vemos las matriculas 
+            this.matriculas = [];
+            let matriculas = JSON.parse(localStorage.getItem('matriculas')) || [];
+            this.matriculas = matriculas.map(matricula=>{
+                return {
+                    //id: alumno.idCategoria,
+                    label: matricula.codigo,
+                }
+            });
         },
         nuevoInscripcion(){
-            this.accion = 'nuevo';
+            this.inscripcion.accion = 'nuevo';
             this.inscripcion.idInscripcion = '';
             this.inscripcion.codigo = '';
-            this.inscripcion.nombre = '';
-        },
-        modificarInscripcion(inscripcion){
-            this.accion = 'modificar';
-            this.inscripcion = inscripcion;
-        },
-        listarInscripcion(){
-            this.inscripcion = JSON.parse( localStorage.getItem('inscripcion') || "[]" )
-                .filter(inscripcion=>inscripcion.nombre.toLowerCase().indexOf(this.buscar.toLowerCase())>-1);
+            this.inscripcion.ciclo = '';
+            this.inscripcion.año = '';
+            this.inscripcion.fecha = '';
         }
     },
-    template: `
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <div class="card">
-                    <div class="card-header">REGISTRO DE INSCRIPCION</div>
-                    <div class="card-body">
-                        <form id="frmInscripcion" @reset.prevent="nuevoInscripcion" v-on:submit.prevent="guardarInscripcion">
-                            <div class="row p-1">
-                                <div class="col-3 col-md-2">
-                                    <label for="txtCodigoInscripcion">CODIGO:</label>
-                                </div>
-                                <div class="col-3 col-md-3">
-                                    <input required pattern="[0-9]{3}" 
-                                        title="Ingrese un codigo de inscripcion de 3 digitos"
-                                            v-model="inscripcion.codigo" type="text" class="form-control" name="txtCodigoInscripcion" id="txtCodigoInscripcion">
+    created(){
+        this.obtenerInscripcion();
+    },
+    template:`
+        <div id="appCiente">
+            <div class="card text-white" id="carInscripcion">
+                <div class="card-header bg-primary">
+                    Registro de Inscripcion
+                    <button type="button" class="btn-close text-end" data-bs-dismiss="alert" data-bs-target="#carInscripcion" aria-label="Close"></button>
+                </div>
+                <div class="card-body text-dark">
+                    <form method="post" @submit.prevent="guardarInscripcion" @reset="nuevoInscripcion">
+                        
+                        <div class="row p-1">
+                            <div class="col col-md-2">Codigo:</div>
+                            <div class="col col-md-2">
+                                <input title="Ingrese el codigo" v-model="inscripcion.codigo" pattern="[0-9]{3,10}" required type="text" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="row p-1">
+                            <div class="col col-md-2">
+                                Alumno:
+                            </div>
+                            <div class="col col-md-3">
+                                <v-select-alumno v-model="inscripcion.nombre" 
+                                    :options="matriculas" placeholder="Seleccione el nombre"/>
+                            </div>
+                        </div>
+                        
+                        <div class="row p-1">
+                            <div class="col col-md-2">Ciclo:</div>
+                            <div class="col col-md-3">
+                                <input title="Ingrese el ciclo" v-model="inscripcion.ciclo" pattern="[0-9.]{1,10}" required type="number" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row p-1">
+                            <div class="col col-md-2">Año:</div>
+                            <div class="col col-md-3">
+                                <input title="Ingrese el año" v-model="inscripcion.año" pattern="[0-9.]{1,10}" required type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row p-1">
+                            <div class="col col-md-2">Fecha de Inscripcion:</div>
+                            <div class="col col-md-3">
+                                <input title="Ingrese la fecha" v-model="inscripcion.fecha" pattern="{0000-00-00}" required type="date" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="row p-1">
+                            <div class="col col-md-5 text-center">
+                                <div v-if="inscripcion.mostrar_msg" class="alert alert-primary alert-dismissible fade show" role="alert">
+                                    {{ inscripcion.msg }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
                             </div>
-                            <div class="row p-1">
-                                <div class="col-3 col-md-2">
-                                    <label for="txtNombreInscripcion">NOMBRE:</label>
-                                </div>
-                                <div class="col-9 col-md-6">
-                                    <input required pattern="[A-Za-zÑñáéíóú ]{3,75}"
-                                        v-model="inscripcion.nombre" type="text" class="form-control" name="txtNombreInscripcion" id="txtNombreInscripcion">
-                                </div>
+                        </div>
+                        <div class="row m-2">
+                            <div class="col col-md-5 text-center">
+                                <input class="btn btn-success" type="submit" value="Guardar">
+                                <input class="btn btn-warning" type="reset" value="Nuevo">
                             </div>
-                            <div class="row p-1">
-                                <div class="col-3 col-md-3">
-                                    <input class="btn btn-primary" type="submit" 
-                                        value="Guardar">
-                                </div>
-                                <div class="col-3 col-md-3">
-                                    <input class="btn btn-warning" type="reset" value="Nuevo">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div class="col-12 col-md-6">
-                <div class="card">
-                    <div class="card-header">LISTADO DE INSCRIPCIONS</div>
-                    <div class="card-body">
-                        <table class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>BUSCAR:</th>
-                                    <th colspan="2"><input type="text" class="form-control" v-model="buscar"
-                                        @keyup="listarInscripcion()"
-                                        placeholder="Buscar por codigo o nombre"></th>
-                                </tr>
-                                <tr>
-                                    <th>CODIGO</th>
-                                    <th colspan="2">NOMBRE</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="inscripcion in inscripcion" :key="inscripcion.idInscripcion" @click="modificarInscripcion(inscripcion)" >
-                                    <td>{{ inscripcion.codigo }}</td>
-                                    <td>{{ inscripcion.nombre }}</td>
-                                    <td><button class="btn btn-danger" @click="eliminarInscripcion(inscripcion)">ELIMINAR</button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="card text-white" id="carBuscarInscripcion">
+                <div class="card-header bg-primary">
+                    Busqueda de Inscripcion
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" data-bs-target="#carBuscarInscripcion" aria-label="Close"></button>
+                </div>
+                <div class="card-body">
+                    <table class="table table table-hover">
+                        <thead>
+                            <tr>
+                                <th colspan="6">
+                                    Buscar: <input @keyup="buscandoInscripcion" v-model="buscar" placeholder="buscar aqui" class="form-control" type="text" >
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>CODIGO</th>
+                                <th>CICLO</th>
+                                <th>AÑO</th>
+                                <th>FECHA</th>
+                                <th>ALUMNO</th>
+    
+                                
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in inscripcion" @click='modificarInscripcion( item )' :key="item.idInscripcion">
+                                <td>{{item.codigo}}</td>
+                                <td>{{item.ciclo}}</td>
+                                <td>{{item.año}}</td>
+                                <td>{{item.fecha}}</td>
+                                <td>{{item.alumno.label}}</td>
+                                <td>
+                                    <button class="btn btn-danger" @click="eliminarInscripcion(item)">Eliminar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

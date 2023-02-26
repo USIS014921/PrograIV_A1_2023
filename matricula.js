@@ -1,119 +1,175 @@
-Vue.component('component-matriculas',{
-    data() {
+Vue.component('v-select-alumno',VueSelect.VueSelect);
+Vue.component('component-matricula',{
+    data:()=>{
         return {
-            accion:'nuevo',
-            buscar: '',
-            matriculas: [],
+            buscar:'',
+            matriculas:[],
             matricula:{
+                accion : 'nuevo',
                 idMatricula : '',
-                codigo : '',
-                nombre : '',
+                codigo: '',
+                ciclo: '',
+                año : '',
+                fecha : '',
             }
         }
     },
     methods:{
-        guardarMatricula(){
-            this.listarMatriculas();
-            if(this.accion==='nuevo'){
-                this.matricula.idMatricula = new Date().getTime().toString(16);
-                this.matriculas.push( JSON.parse( JSON.stringify(this.matricula) ) );
-            }else if(this.accion==='modificar'){
-                let index = this.matriculas.findIndex(matricula=>matricula.idMatricula==this.matricula.idMatricula);
-                this.matriculas[index] = JSON.parse( JSON.stringify(this.matricula) );
-            }else if(this.accion==='eliminar'){
-                let index = this.matriculas.findIndex(matricula=>matricula.idMatricula==this.matricula.idMatricula);
-                this.matriculas.splice(index,1);
-            }
-            localStorage.setItem("matriculas", JSON.stringify(this.matriculas) );
-            this.nuevoMatricula();
+        buscandoMatricula(){
+            this.obtenerMatriculas(this.buscar);
         },
         eliminarMatricula(matricula){
-            if( confirm(`Esta seguro de eliminar a ${matricula.nombre}?`) ){
-                this.accion='eliminar';
-                this.matricula=matricula;
+            if( confirm(`Esta seguro de eliminar el matricula ${matricula.nombre}?`) ){
+                this.matricula.accion = 'eliminar';
+                this.matricula.idMatricula = matricula.idMatricula;
                 this.guardarMatricula();
             }
+            this.nuevoMatricula();
+        },
+        modificarMatricula(datos){
+            this.matricula = JSON.parse(JSON.stringify(datos));
+            this.matricula.accion = 'modificar';
+        },
+        guardarMatricula(){
+            this.obtenerMatriculas();
+            let matriculas = JSON.parse(localStorage.getItem('matriculas')) || [];
+            if(this.matricula.accion=="nuevo"){
+                this.matricula.idMatricula = generarIdUnicoFecha();
+                matriculas.push(this.matricula);
+            } else if(this.matricula.accion=="modificar"){
+                let index = matriculas.findIndex(matricula=>matricula.idMatricula==this.matricula.idMatricula);
+                matriculas[index] = this.matricula;
+            } else if( this.matricula.accion=="eliminar" ){
+                let index = matriculas.findIndex(matricula=>matricula.idMatricula==this.matricula.idMatricula);
+                matriculas.splice(index,1);
+            }
+            localStorage.setItem('matriculas', JSON.stringify(matriculas));
+            this.nuevoMatricula();
+            this.obtenerMatriculas();
+            this.matricula.msg = 'Matricula procesado con exito';
+        },
+        obtenerMatriculas(valor=''){
+            this.matriculas = [];
+            let matriculas = JSON.parse(localStorage.getItem('matriculas')) || [];
+            this.matriculas = matriculas.filter(matricula=>matricula.ciclo.toLowerCase().indexOf(valor.toLowerCase())>-1);
+             
+            //aqui vemos las alumnos 
+            this.alumnos = [];
+            let alumnos = JSON.parse(localStorage.getItem('alumnos')) || [];
+            this.alumnos = alumnos.map(alumno=>{
+                return {
+                    //id: alumno.idCategoria,
+                    label: alumno.nombre,
+                }
+            });
         },
         nuevoMatricula(){
-            this.accion = 'nuevo';
+            this.matricula.accion = 'nuevo';
             this.matricula.idMatricula = '';
             this.matricula.codigo = '';
-            this.matricula.nombre = '';
-        },
-        modificarMatricula(matricula){
-            this.accion = 'modificar';
-            this.matricula = matricula;
-        },
-        listarMatriculas(){
-            this.matriculas = JSON.parse( localStorage.getItem('matriculas') || "[]" )
-                .filter(matricula=>matricula.nombre.toLowerCase().indexOf(this.buscar.toLowerCase())>-1);
+            this.matricula.ciclo = '';
+            this.matricula.año = '';
+            this.matricula.fecha = '';
         }
     },
-    template: `
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <div class="card">
-                    <div class="card-header">REGISTRO DE MATRICULA</div>
-                    <div class="card-body">
-                        <form id="frmMatricula" @reset.prevent="nuevoMatricula" v-on:submit.prevent="guardarMatricula">
-                            <div class="row p-1">
-                                <div class="col-3 col-md-2">
-                                    <label for="txtCodigoMatricula">CODIGO:</label>
-                                </div>
-                                <div class="col-3 col-md-3">
-                                    <input required pattern="[0-9]{3}" 
-                                        title="Ingrese un codigo de matricula de 3 digitos"
-                                            v-model="matricula.codigo" type="text" class="form-control" name="txtCodigoMatricula" id="txtCodigoMatricula">
+    created(){
+        this.obtenerMatriculas();
+    },
+    template:`
+        <div id="appCiente">
+            <div class="card text-white" id="carMatricula">
+                <div class="card-header bg-primary">
+                    Registro de Matriculas
+                    <button type="button" class="btn-close text-end" data-bs-dismiss="alert" data-bs-target="#carMatricula" aria-label="Close"></button>
+                </div>
+                <div class="card-body text-dark">
+                    <form method="post" @submit.prevent="guardarMatricula" @reset="nuevoMatricula">
+                        
+                        <div class="row p-1">
+                            <div class="col col-md-2">Codigo:</div>
+                            <div class="col col-md-2">
+                                <input title="Ingrese el codigo" v-model="matricula.codigo" pattern="[A-Z0-9]{3,10}" required type="text" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="row p-1">
+                            <div class="col col-md-2">
+                                Alumno:
+                            </div>
+                            <div class="col col-md-3">
+                                <v-select-alumno v-model="matricula.alumno" 
+                                    :options="alumnos" placeholder="Seleccione una alumno"/>
+                            </div>
+                        </div>
+                        
+                        <div class="row p-1">
+                            <div class="col col-md-2">Ciclo:</div>
+                            <div class="col col-md-3">
+                                <input title="Ingrese el ciclo" v-model="matricula.ciclo" pattern="[0-9.]{1,10}" required type="number" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row p-1">
+                            <div class="col col-md-2">Año:</div>
+                            <div class="col col-md-3">
+                                <input title="Ingrese el año" v-model="matricula.año" pattern="[0-9.]{1,10}" required type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row p-1">
+                            <div class="col col-md-2">Fecha de Matricula:</div>
+                            <div class="col col-md-3">
+                                <input title="Ingrese la fecha" v-model="matricula.fecha" pattern="{0000-00-00}" required type="date" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="row p-1">
+                            <div class="col col-md-5 text-center">
+                                <div v-if="matricula.mostrar_msg" class="alert alert-primary alert-dismissible fade show" role="alert">
+                                    {{ matricula.msg }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
                             </div>
-                            <div class="row p-1">
-                                <div class="col-3 col-md-2">
-                                    <label for="txtNombreMatricula">NOMBRE:</label>
-                                </div>
-                                <div class="col-9 col-md-6">
-                                    <input required pattern="[A-Za-zÑñáéíóú ]{3,75}"
-                                        v-model="matricula.nombre" type="text" class="form-control" name="txtNombreMatricula" id="txtNombreMatricula">
-                                </div>
+                        </div>
+                        <div class="row m-2">
+                            <div class="col col-md-5 text-center">
+                                <input class="btn btn-success" type="submit" value="Guardar">
+                                <input class="btn btn-warning" type="reset" value="Nuevo">
                             </div>
-                            <div class="row p-1">
-                                <div class="col-3 col-md-3">
-                                    <input class="btn btn-primary" type="submit" 
-                                        value="Guardar">
-                                </div>
-                                <div class="col-3 col-md-3">
-                                    <input class="btn btn-warning" type="reset" value="Nuevo">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div class="col-12 col-md-6">
-                <div class="card">
-                    <div class="card-header">LISTADO DE MATRICULAS</div>
-                    <div class="card-body">
-                        <table class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>BUSCAR:</th>
-                                    <th colspan="2"><input type="text" class="form-control" v-model="buscar"
-                                        @keyup="listarMatriculas()"
-                                        placeholder="Buscar por codigo o nombre"></th>
-                                </tr>
-                                <tr>
-                                    <th>CODIGO</th>
-                                    <th colspan="2">NOMBRE</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="matricula in matriculas" :key="matricula.idMatricula" @click="modificarMatricula(matricula)" >
-                                    <td>{{ matricula.codigo }}</td>
-                                    <td>{{ matricula.nombre }}</td>
-                                    <td><button class="btn btn-danger" @click="eliminarMatricula(matricula)">ELIMINAR</button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="card text-white" id="carBuscarMatricula">
+                <div class="card-header bg-primary">
+                    Busqueda de Matriculas
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" data-bs-target="#carBuscarMatricula" aria-label="Close"></button>
+                </div>
+                <div class="card-body">
+                    <table class="table table table-hover">
+                        <thead>
+                            <tr>
+                                <th colspan="6">
+                                    Buscar: <input @keyup="buscandoMatricula" v-model="buscar" placeholder="Buscar aqui" class="form-control" type="text" >
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>CODIGO</th>
+                                <th>ALUMNO</th>
+                                <th>CICLO</th>
+                                <th>AÑO</th>
+                                <th>FECHA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in matriculas" @click='modificarMatricula( item )' :key="item.idMatricula">
+                                <td>{{item.codigo}}</td>
+                                <td>{{item.alumno.label}}</td>
+                                <td>{{item.ciclo}}</td>
+                                <td>{{item.año}}</td>
+                                <td>{{item.fecha}}</td>
+                                    <button class="btn btn-danger" @click="eliminarMatricula(item)">Eliminar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

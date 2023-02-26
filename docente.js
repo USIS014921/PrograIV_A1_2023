@@ -86,7 +86,7 @@ Vue.component('component-docente',{
                 <label for="txtCodigoDocente">Codigo:</label>
                </div>
                 <div class="col-3 col-md-3">
-                <input required pattern="[A-Z0-9]{10}" title="Ingrese un Codigo ejemplo: USIS013090"
+                <input required pattern="[0-9]{3}" title="Ingrese un Codigo"
                     v-model="docente.codigo" type="text" class="form-control" name="txtCodigoDocente"
                     id="txtCodigoDocente">
                 </div>
@@ -97,7 +97,7 @@ Vue.component('component-docente',{
                     <label for="txtNombreDocente">Nombre:</label>
                 </div>
                 <div class="col-9 col-md-3">
-                    <input required pattern="[A-Za-zÑñáéíóú ]{25}" v-model="docente.nombre" type="text"
+                    <input required pattern="[A-Za-zÑñáéíóú ]{3,75}" v-model="docente.nombre" type="text"
                         class="form-control" name="txtNombreDocente" id="txtNombreDocente">
                 </div>
             </div>
@@ -107,7 +107,7 @@ Vue.component('component-docente',{
                     <label for="txtDireccionDocente">Dirección:</label>
                 </div>
                 <div class="col-9 col-md-3">
-                    <input required pattern="[A-Za-zÑñáéíóú., ]{25}" v-model="docente.direccion" type="text" 
+                    <input required pattern="[A-Za-zÑñáéíóú., ]{3,75}" v-model="docente.direccion" type="text" 
                         class="form-control" name="txtDireccionDocente" id="txtDireccionDocente">
                 </div>
             </div>
@@ -154,7 +154,7 @@ Vue.component('component-docente',{
                 <label for="txtTelefonoDocente">Teléfono:</label>
             </div>
             <div class="col-9 col-md-3">
-                <input v-model="docente.telefono" title="Ingrese un numero sin espacios ni guiones" pattern="[0-9]{8}" type="text" class="form-control"
+                <input v-model="docente.telefono" title="Ingrese un numero sin espacios ni guiones" pattern="[0-9]{4}-[0-9]{4}" type="text" class="form-control"
                     name="txtTelefonoDocente" id="txtTelefonoDocente">
             </div>
         </div>

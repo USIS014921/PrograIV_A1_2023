@@ -155,7 +155,7 @@ Vue.component('component-alumno',{
                         <label for="txtTelefonoAlumno">Teléfono:</label>
                     </div>
                     <div class="col-9 col-md-3">
-                        <input v-model="alumno.telefono" title="Ingrese un numero sin espacios ni guiones" pattern="[0-9]{8}" type="text" class="form-control"
+                        <input v-model="alumno.telefono" title="Ingrese un numero sin espacios ni guiones" pattern="[0-9]{4}-[0-9]{4}" type="text" class="form-control"
                             name="txtTelefonoAlumno" id="txtTelefonoAlumno">
                     </div>
                 </div>

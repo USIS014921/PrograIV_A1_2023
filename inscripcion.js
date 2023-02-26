@@ -9,7 +9,7 @@ Vue.component('component-inscripcion',{
                 idInscripcion : '',
                 codigo: '',
                 ciclo: '',
-                año : '',
+                dui : '',
                 fecha : '',
             }
         }
@@ -53,12 +53,10 @@ Vue.component('component-inscripcion',{
             let inscripcion = JSON.parse(localStorage.getItem('inscripcion')) || [];
             this.inscripcion = inscripcion.filter(inscripcion=>inscripcion.ciclo.toLowerCase().indexOf(valor.toLowerCase())>-1);
              
-            //aqui vemos las matriculas 
             this.matriculas = [];
             let matriculas = JSON.parse(localStorage.getItem('matriculas')) || [];
             this.matriculas = matriculas.map(matricula=>{
                 return {
-                    //id: matricula.idCategoria,
                     label: matricula.codigo,
                 }
             });
@@ -68,7 +66,7 @@ Vue.component('component-inscripcion',{
             this.inscripcion.idInscripcion = '';
             this.inscripcion.codigo = '';
             this.inscripcion.ciclo = '';
-            this.inscripcion.año = '';
+            this.inscripcion.dui = '';
             this.inscripcion.fecha = '';
         }
     },
@@ -86,19 +84,19 @@ Vue.component('component-inscripcion',{
                 <form method="post" @submit.prevent="guardarInscripcion" @reset="nuevoInscripcion">
                     
                     <div class="row p-1">
-                        <div class="col col-md-2">Codigo:</div>
+                        <div class="col col-md-2">Nombre:</div>
                         <div class="col col-md-2">
-                            <input title="Ingrese el codigo" v-model="inscripcion.codigo" pattern="[A-Za-z]{3,75}" required type="text" class="form-control">
+                            <input title="Ingrese el nombre" v-model="inscripcion.nombre" pattern="[A-Za-z]{3,75}" required type="text" class="form-control">
                         </div>
                     </div>
 
                     <div class="row p-1">
-                        <div class="col col-md-2">
-                            Alumno:
+                        <div class="col col-md-2">s
+                            Codigo:
                         </div>
                         <div class="col col-md-3">
-                            <v-select-alumno v-model="inscripcion.nombre" 
-                                :options="matriculas" placeholder="Seleccione el nombre"/>
+                            <v-select-alumno v-model="inscripcion.codigo" 
+                                :options="matriculas" placeholder="Seleccione el codigo"/>
                         </div>
                     </div>
                         
@@ -109,9 +107,9 @@ Vue.component('component-inscripcion',{
                             </div>
                         </div>
                         <div class="row p-1">
-                            <div class="col col-md-2">Año:</div>
+                            <div class="col col-md-2">DUI:</div>
                             <div class="col col-md-3">
-                                <input title="Ingrese el año" v-model="inscripcion.año" pattern="[0-9.]{1,10}" required type="text" class="form-control">
+                                <input title="Ingrese el DUI" v-model="inscripcion.dui" pattern="[0-9]{8}-[0-9]{1}" required type="text" class="form-control">
                             </div>
                         </div>
                         <div class="row p-1">
@@ -154,7 +152,7 @@ Vue.component('component-inscripcion',{
                                 <th>CODIGO</th>
                                 <th>ALUMNO</th>
                                 <th>CICLO</th>
-                                <th>AÑO</th>
+                                <th>DUI</th>
                                 <th>FECHA</th>
                             </tr>
                         </thead>
@@ -163,7 +161,7 @@ Vue.component('component-inscripcion',{
                                 <td>{{item.codigo}}</td>
                                 <td>{{item.alumno.label}}</td>
                                 <td>{{item.ciclo}}</td>
-                                <td>{{item.año}}</td>
+                                <td>{{item.dui}}</td>
                                 <td>{{item.fecha}}</td>
                                     <button class="btn btn-danger" @click="eliminarInscripcion(item)">Eliminar</button>
                                 </td>

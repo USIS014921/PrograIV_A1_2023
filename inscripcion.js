@@ -1,4 +1,4 @@
-Vue.component('v-select-matricula',VueSelect.VueSelect);
+Vue.component('v-select-alumno',VueSelect.VueSelect);
 Vue.component('component-inscripcion',{
     data:()=>{
         return {
@@ -19,7 +19,7 @@ Vue.component('component-inscripcion',{
             this.obtenerInscripcion(this.buscar);
         },
         eliminarInscripcion(inscripcion){
-            if( confirm(`Esta seguro de eliminar la inscripcion ${inscripcion.nombre}?`) ){
+            if( confirm(`Esta seguro de eliminar el inscripcion ${inscripcion.nombre}?`) ){
                 this.inscripcion.accion = 'eliminar';
                 this.inscripcion.idInscripcion = inscripcion.idInscripcion;
                 this.guardarInscripcion();
@@ -46,7 +46,7 @@ Vue.component('component-inscripcion',{
             localStorage.setItem('inscripcion', JSON.stringify(inscripcion));
             this.nuevoInscripcion();
             this.obtenerInscripcion();
-            this.inscripcion.msg = 'Inscripcion procesada con exito';
+            this.inscripcion.msg = 'Inscripcion procesado con exito';
         },
         obtenerInscripcion(valor=''){
             this.inscripcion = [];
@@ -58,7 +58,7 @@ Vue.component('component-inscripcion',{
             let matriculas = JSON.parse(localStorage.getItem('matriculas')) || [];
             this.matriculas = matriculas.map(matricula=>{
                 return {
-                    //id: alumno.idCategoria,
+                    //id: matricula.idCategoria,
                     label: matricula.codigo,
                 }
             });
@@ -83,24 +83,24 @@ Vue.component('component-inscripcion',{
                     <button type="button" class="btn-close text-end" data-bs-dismiss="alert" data-bs-target="#carInscripcion" aria-label="Close"></button>
                 </div>
                 <div class="card-body text-dark">
-                    <form method="post" @submit.prevent="guardarInscripcion" @reset="nuevoInscripcion">
-                        
-                        <div class="row p-1">
-                            <div class="col col-md-2">Codigo:</div>
-                            <div class="col col-md-2">
-                                <input title="Ingrese el codigo" v-model="inscripcion.codigo" pattern="[0-9]{3,10}" required type="text" class="form-control">
-                            </div>
+                <form method="post" @submit.prevent="guardarInscripcion" @reset="nuevoInscripcion">
+                    
+                    <div class="row p-1">
+                        <div class="col col-md-2">Codigo:</div>
+                        <div class="col col-md-2">
+                            <input title="Ingrese el codigo" v-model="inscripcion.codigo" pattern="[A-Za-z]{3,75}" required type="text" class="form-control">
                         </div>
+                    </div>
 
-                        <div class="row p-1">
-                            <div class="col col-md-2">
-                                Alumno:
-                            </div>
-                            <div class="col col-md-3">
-                                <v-select-alumno v-model="inscripcion.nombre" 
-                                    :options="matriculas" placeholder="Seleccione el nombre"/>
-                            </div>
+                    <div class="row p-1">
+                        <div class="col col-md-2">
+                            Alumno:
                         </div>
+                        <div class="col col-md-3">
+                            <v-select-alumno v-model="inscripcion.nombre" 
+                                :options="matriculas" placeholder="Seleccione el nombre"/>
+                        </div>
+                    </div>
                         
                         <div class="row p-1">
                             <div class="col col-md-2">Ciclo:</div>
@@ -147,28 +147,24 @@ Vue.component('component-inscripcion',{
                         <thead>
                             <tr>
                                 <th colspan="6">
-                                    Buscar: <input @keyup="buscandoInscripcion" v-model="buscar" placeholder="buscar aqui" class="form-control" type="text" >
+                                    Buscar: <input @keyup="buscandoInscripcion" v-model="buscar" placeholder="Buscar aqui" class="form-control" type="text" >
                                 </th>
                             </tr>
                             <tr>
                                 <th>CODIGO</th>
+                                <th>ALUMNO</th>
                                 <th>CICLO</th>
                                 <th>AÑO</th>
                                 <th>FECHA</th>
-                                <th>ALUMNO</th>
-    
-                                
-                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="item in inscripcion" @click='modificarInscripcion( item )' :key="item.idInscripcion">
                                 <td>{{item.codigo}}</td>
+                                <td>{{item.alumno.label}}</td>
                                 <td>{{item.ciclo}}</td>
                                 <td>{{item.año}}</td>
                                 <td>{{item.fecha}}</td>
-                                <td>{{item.alumno.label}}</td>
-                                <td>
                                     <button class="btn btn-danger" @click="eliminarInscripcion(item)">Eliminar</button>
                                 </td>
                             </tr>

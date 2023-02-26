@@ -121,7 +121,7 @@ Vue.component('component-alumnos',{
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-12">
+            <div class="col-12 col-md-6">
                 <div class="card">
                     <div class="card-header">LISTADO DE ALUMNOS</div>
                     <div class="card-body">

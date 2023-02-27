@@ -7,8 +7,9 @@ Vue.component('component-inscripcion',{
             inscripciones:[],
             inscripcion:{
                 accion : 'nuevo',
-                idInscripcion: '',
+                idInscripcion:'',
                 codigo: '',
+                alumno: '',
                 ciclo: '',
                 dui : '',
                 fecha : '',
@@ -88,7 +89,7 @@ Vue.component('component-inscripcion',{
                     <div class="row p-1">
                         <div class="col col-md-2">Nombre:</div>
                         <div class="col col-md-2">
-                            <input title="Ingrese el nombre" v-model="inscripcion.nombre" pattern="[A-Za-z]{3,75}" required type="text" class="form-control">
+                            <input title="Ingrese el nombre" v-model="inscripcion.alumno" pattern="[A-Za-z]{3,75}" required type="text" class="form-control">
                         </div>
                     </div>
 
@@ -161,8 +162,8 @@ Vue.component('component-inscripcion',{
                         </thead>
                         <tbody>
                             <tr v-for="item in inscripciones" @click='modificarInscripcion( item )' :key="item.idInscripcion">
-                                <td>{{item.codigo}}</td>
-                                <td>{{item.alumno.label}}</td>
+                                <td>{{item.codigo.label}}</td>
+                                <td>{{item.alumno}}</td>
                                 <td>{{item.ciclo}}</td>
                                 <td>{{item.dui}}</td>
                                 <td>{{item.fecha}}</td>

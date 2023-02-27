@@ -1,39 +1,26 @@
 body {
-
     background-image: url(Fondos/Clase.jpg);
     background-size: cover;
     background-repeat: no-repeat;
-     background-attachment:fixed ;
-
-    
+    background-attachment:fixed ;
     margin: 0px;
-    
 }
 
 table {
-
     background-color:rgb(87, 116, 134);
-
 }
 
 .card {
     background-color:rgb(87, 116, 134);
-
     margin : 5%;
     margin-left: 19%;
     margin-right: 19%;
-    
-
 }
 
 .card-header {
-
     background-color:rgb(87, 116, 134);
-
 }
 
 .card {
-
     width: 60%;
-
 }

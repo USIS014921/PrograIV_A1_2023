@@ -1,12 +1,13 @@
 Vue.component('v-select-alumno',VueSelect.VueSelect);
+Vue.component('v-select-matricula',VueSelect.VueSelect);
 Vue.component('component-inscripcion',{
     data:()=>{
         return {
             buscar:'',
-            inscripcion:[],
+            inscripciones:[],
             inscripcion:{
                 accion : 'nuevo',
-                idInscripcion : '',
+                idInscripcion: '',
                 codigo: '',
                 ciclo: '',
                 dui : '',
@@ -16,10 +17,10 @@ Vue.component('component-inscripcion',{
     },
     methods:{
         buscandoInscripcion(){
-            this.obtenerInscripcion(this.buscar);
+            this.obtenerInscripciones(this.buscar);
         },
         eliminarInscripcion(inscripcion){
-            if( confirm(`Esta seguro de eliminar el inscripcion ${inscripcion.nombre}?`) ){
+            if( confirm(`Esta seguro de eliminar la inscripcion ${inscripcion.nombre}?`) ){
                 this.inscripcion.accion = 'eliminar';
                 this.inscripcion.idInscripcion = inscripcion.idInscripcion;
                 this.guardarInscripcion();
@@ -31,27 +32,27 @@ Vue.component('component-inscripcion',{
             this.inscripcion.accion = 'modificar';
         },
         guardarInscripcion(){
-            this.obtenerInscripcion();
-            let inscripcion = JSON.parse(localStorage.getItem('inscripcion')) || [];
+            this.obtenerInscripciones();
+            let inscripciones = JSON.parse(localStorage.getItem('inscripciones')) || [];
             if(this.inscripcion.accion=="nuevo"){
                 this.inscripcion.idInscripcion = generarIdUnicoFecha();
-                inscripcion.push(this.inscripcion);
+                inscripciones.push(this.inscripcion);
             } else if(this.inscripcion.accion=="modificar"){
-                let index = inscripcion.findIndex(inscripcion=>inscripcion.idInscripcion==this.inscripcion.idInscripcion);
-                inscripcion[index] = this.inscripcion;
+                let index = inscripciones.findIndex(inscripcion=>inscripcion.idInscripcion==this.inscripcion.idInscripcion);
+                inscripciones[index] = this.inscripcion;
             } else if( this.inscripcion.accion=="eliminar" ){
-                let index = inscripcion.findIndex(inscripcion=>inscripcion.idInscripcion==this.inscripcion.idInscripcion);
-                inscripcion.splice(index,1);
+                let index = inscripciones.findIndex(inscripcion=>inscripcion.idInscripcion==this.inscripcion.idInscripcion);
+                inscripciones.splice(index,1);
             }
-            localStorage.setItem('inscripcion', JSON.stringify(inscripcion));
+            localStorage.setItem('inscripciones', JSON.stringify(inscripciones));
             this.nuevoInscripcion();
-            this.obtenerInscripcion();
-            this.inscripcion.msg = 'Inscripcion procesado con exito';
+            this.obtenerInscripciones();
+            this.inscripcion.msg = 'Inscripcion procesada con exito';
         },
-        obtenerInscripcion(valor=''){
+        obtenerInscripciones(valor=''){
             this.inscripcion = [];
             let inscripcion = JSON.parse(localStorage.getItem('inscripcion')) || [];
-            this.inscripcion = inscripcion.filter(inscripcion=>inscripcion.ciclo.toLowerCase().indexOf(valor.toLowerCase())>-1);
+            this.inscripcion = inscripcion.filter(inscripcion=>inscripcion.idInscripcion.toLowerCase().indexOf(valor.toLowerCase())>-1);
              
             this.matriculas = [];
             let matriculas = JSON.parse(localStorage.getItem('matriculas')) || [];
@@ -71,15 +72,16 @@ Vue.component('component-inscripcion',{
         }
     },
     created(){
-        this.obtenerInscripcion();
+        this.obtenerInscripciones();
     },
     template:`
         <div id="appCiente">
             <div class="card text-white" id="carInscripcion">
                 <div class="card-header bg-primary">
-                    Registro de Inscripcion
+                    Registro de Inscripciones
                     <button type="button" class="btn-close text-end" data-bs-dismiss="alert" data-bs-target="#carInscripcion" aria-label="Close"></button>
                 </div>
+                
                 <div class="card-body text-dark">
                 <form method="post" @submit.prevent="guardarInscripcion" @reset="nuevoInscripcion">
                     
@@ -91,11 +93,11 @@ Vue.component('component-inscripcion',{
                     </div>
 
                     <div class="row p-1">
-                        <div class="col col-md-2">s
+                        <div class="col col-md-2">
                             Codigo:
                         </div>
                         <div class="col col-md-3">
-                            <v-select-alumno v-model="inscripcion.codigo" 
+                            <v-select-matricula v-model="inscripcion.codigo" 
                                 :options="matriculas" placeholder="Seleccione el codigo"/>
                         </div>
                     </div>
@@ -106,6 +108,7 @@ Vue.component('component-inscripcion',{
                                 <input title="Ingrese el ciclo" v-model="inscripcion.ciclo" pattern="[0-9.]{1,10}" required type="number" class="form-control">
                             </div>
                         </div>
+
                         <div class="row p-1">
                             <div class="col col-md-2">DUI:</div>
                             <div class="col col-md-3">
@@ -137,7 +140,7 @@ Vue.component('component-inscripcion',{
             </div>
             <div class="card text-white" id="carBuscarInscripcion">
                 <div class="card-header bg-primary">
-                    Busqueda de Inscripcion
+                    Busqueda de Inscripciones
                     <button type="button" class="btn-close" data-bs-dismiss="alert" data-bs-target="#carBuscarInscripcion" aria-label="Close"></button>
                 </div>
                 <div class="card-body">
@@ -157,7 +160,7 @@ Vue.component('component-inscripcion',{
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="item in inscripcion" @click='modificarInscripcion( item )' :key="item.idInscripcion">
+                            <tr v-for="item in inscripciones" @click='modificarInscripcion( item )' :key="item.idInscripcion">
                                 <td>{{item.codigo}}</td>
                                 <td>{{item.alumno.label}}</td>
                                 <td>{{item.ciclo}}</td>

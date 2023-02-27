@@ -80,6 +80,7 @@ Vue.component('component-alumno',{
                     Registro Alumno
                     <button type="button" class="btn-close text-end" data-bs-dismiss="alert" data-bs-target="#carAlumno" aria-label="Close"></button>
                 </div>
+
                 <div class="card-body text-dark">
                     <form method="post" @submit.prevent="guardarAlumno" @reset="nuevoAlumno">
                     <div class="row p-1">
@@ -92,6 +93,7 @@ Vue.component('component-alumno',{
                             id="txtCodigoAlumno">
                         </div>
                      </div>
+
                         <div class="row p-1">
                         <div class="col-3 col-md-1">
                             <label for="txtNombreAlumno">Nombre:</label>
@@ -100,8 +102,8 @@ Vue.component('component-alumno',{
                             <input required pattern="[A-Za-zÑñáéíóú ]{3,75}" v-model="alumno.nombre" type="text"
                                 class="form-control" name="txtNombreAlumno" id="txtNombreAlumno">
                         </div>
-                    </div> <!--hasta aqui-->
-                    <!--Capa de ingreso de datos n4-->
+                    </div>
+                    
                     <div class="row p-1">
                         <div class="col-3 col-md-1">
                             <label for="txtDireccionAlumno">Dirección:</label>
@@ -112,7 +114,7 @@ Vue.component('component-alumno',{
                                 id="txtDireccionAlumno">
                         </div>
                     </div>
-                    <!--Capa de ingreso de datos n4-->
+                    
                     <div class="row p-1">
                         <div class="col-3 col-md-1">
                             <label for="txtMunicipioAlumno">Municipio:</label>
@@ -159,7 +161,7 @@ Vue.component('component-alumno',{
                             name="txtTelefonoAlumno" id="txtTelefonoAlumno">
                     </div>
                 </div>
-                <!--Capa de ingreso de datos n4-->
+
                 <div class="row p-1">
                     <div class="col-3 col-md-1">
                         <label for="txtFechaAlumno">Fecha de nacimiento:</label>
@@ -169,7 +171,7 @@ Vue.component('component-alumno',{
                             id="txtFechaAlumno">
                     </div>
                 </div>
-                <!--Capa de ingreso de datos n4-->
+
                 <div class="row p-1">
                     <div class="col-3 col-md-1">
                         <label for="txtGeneroAlumno">Genero:</label>
@@ -191,6 +193,7 @@ Vue.component('component-alumno',{
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="row m-2">
                             <div class="col col-md-5 text-center">
                                 <input class="btn btn-success" type="submit" value="Guardar">

@@ -19,7 +19,7 @@ Vue.component('component-matricula',{
             this.obtenerMatriculas(this.buscar);
         },
         eliminarMatricula(matricula){
-            if( confirm(`Esta seguro de eliminar el matricula ${matricula.nombre}?`) ){
+            if( confirm(`Esta seguro de eliminar la matricula ${matricula.nombre}?`) ){
                 this.matricula.accion = 'eliminar';
                 this.matricula.idMatricula = matricula.idMatricula;
                 this.guardarMatricula();
@@ -46,19 +46,17 @@ Vue.component('component-matricula',{
             localStorage.setItem('matriculas', JSON.stringify(matriculas));
             this.nuevoMatricula();
             this.obtenerMatriculas();
-            this.matricula.msg = 'Matricula procesado con exito';
+            this.matricula.msg = 'Matricula procesada con exito';
         },
         obtenerMatriculas(valor=''){
             this.matriculas = [];
             let matriculas = JSON.parse(localStorage.getItem('matriculas')) || [];
             this.matriculas = matriculas.filter(matricula=>matricula.ciclo.toLowerCase().indexOf(valor.toLowerCase())>-1);
              
-            //aqui vemos las alumnos 
             this.alumnos = [];
             let alumnos = JSON.parse(localStorage.getItem('alumnos')) || [];
             this.alumnos = alumnos.map(alumno=>{
                 return {
-                    //id: alumno.idCategoria,
                     label: alumno.nombre,
                 }
             });
@@ -105,21 +103,24 @@ Vue.component('component-matricula',{
                         <div class="row p-1">
                             <div class="col col-md-2">Ciclo:</div>
                             <div class="col col-md-3">
-                                <input title="Ingrese el ciclo" v-model="matricula.ciclo" pattern="[0-9.]{1,10}" required type="number" class="form-control">
+                                <input title="Ingrese el ciclo" v-model="matricula.ciclo" pattern="[0-9.]{1,3}" required type="number" class="form-control">
                             </div>
                         </div>
+
                         <div class="row p-1">
                             <div class="col col-md-2">Año:</div>
                             <div class="col col-md-3">
                                 <input title="Ingrese el año" v-model="matricula.año" pattern="[0-9.]{1,10}" required type="text" class="form-control">
                             </div>
                         </div>
+
                         <div class="row p-1">
                             <div class="col col-md-2">Fecha de Matricula:</div>
                             <div class="col col-md-3">
                                 <input title="Ingrese la fecha" v-model="matricula.fecha" pattern="{0000-00-00}" required type="date" class="form-control form-control-sm">
                             </div>
                         </div>
+
                         <div class="row p-1">
                             <div class="col col-md-5 text-center">
                                 <div v-if="matricula.mostrar_msg" class="alert alert-primary alert-dismissible fade show" role="alert">
@@ -128,6 +129,7 @@ Vue.component('component-matricula',{
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="row m-2">
                             <div class="col col-md-5 text-center">
                                 <input class="btn btn-success" type="submit" value="Guardar">

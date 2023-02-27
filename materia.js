@@ -16,7 +16,7 @@ Vue.component('component-materia',{
             this.obtenerMaterias(this.buscar);
         },
         eliminarMateria(materia){
-            if( confirm(`Esta seguro de eliminar el materia ${materia.nombre}?`) ){
+            if( confirm(`Esta seguro de eliminar la materia ${materia.nombre}?`) ){
                 this.materia.accion = 'eliminar';
                 this.materia.idMateria = materia.idMateria;
                 this.guardarMateria();
@@ -43,7 +43,6 @@ Vue.component('component-materia',{
             localStorage.setItem('materias', JSON.stringify(materias));
             this.nuevoMateria();
             this.obtenerMaterias();
-            //this.materia.msg = 'Materia procesado con exito';
         },
         obtenerMaterias(valor=''){
             this.materias = [];
@@ -53,7 +52,6 @@ Vue.component('component-materia',{
         },
         nuevoMateria(){
             this.materia.accion = 'nuevo';
-            //this.materia.msg = '';
             this.materia.idMateria = '';
             this.materia.codigo = '';
             this.materia.nombre = '';
@@ -87,6 +85,7 @@ Vue.component('component-materia',{
                             id="txtCodigoMateria">
                         </div>
                      </div>
+
                         <div class="row p-1">
                         <div class="col-3 col-md-2">
                             <label for="txtNombreMateria">Nombre:</label>
@@ -95,7 +94,8 @@ Vue.component('component-materia',{
                             <input required pattern="[A-Za-zÑñáéíóú ]{3,75}" v-model="materia.nombre" type="text"
                                 class="form-control" name="txtNombreMateria" id="txtNombreMateria">
                         </div>
-                    </div> 
+                    </div>
+
                         <div class="row p-1">
                             <div class="col col-md-5 text-center">
                                 <div v-if="materia.mostrar_msg" class="alert alert-primary alert-dismissible fade show" role="alert">

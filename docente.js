@@ -122,11 +122,12 @@ Vue.component('component-docente',{
                         id="txtMunicipioDocente">
                 </div>
             </div>
-            <!--Capa de ingreso de datos n5-->
+            
             <div class="row p-1">
                 <div class="col-3 col-md-1">
                     <label for="txtDepartamentoDocente">Departamento:</label>
                 </div>
+
                 <div class="col-9 col-md-3">
                     <select v-model="docente.departamento" required pattern="[A-Za-zÑñáéíóú., ]{3,75}"
                         type="text" class="form-control" name="txtDepartamentoDocente"
@@ -158,7 +159,7 @@ Vue.component('component-docente',{
                     name="txtTelefonoDocente" id="txtTelefonoDocente">
             </div>
         </div>
-        <!--Capa de ingreso de datos n4-->
+
         <div class="row p-1">
             <div class="col-3 col-md-1">
                 <label for="txtFechaDocente">Fecha de nacimiento:</label>
@@ -168,7 +169,7 @@ Vue.component('component-docente',{
                     id="txtFechaDocente">
             </div>
         </div>
-        <!--Capa de ingreso de datos n4-->
+
         <div class="row p-1">
             <div class="col-3 col-md-1">
                 <label for="txtGeneroDocente">Genero:</label>
@@ -190,6 +191,7 @@ Vue.component('component-docente',{
                         </div>
                     </div>
                 </div>
+
                 <div class="row m-2">
                     <div class="col col-md-5 text-center">
                         <input class="btn btn-success" type="submit" value="Guardar">
